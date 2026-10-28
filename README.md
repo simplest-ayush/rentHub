@@ -4,8 +4,8 @@ An apartment rental platform built with Angular and Tailwind CSS.
 
 ## Links
 
-- **GitHub:** https://github.com/<your-username>/rent-hub
-- **Live app:** https://<your-site>.netlify.app
+- **GitHub:** https://github.com/simplest-ayush/rentHub
+- **Live app:** https://rentt-hub.netlify.app
 
 ## Demo credentials
 
