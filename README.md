@@ -1,59 +1,59 @@
 # RentHub
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.4.
+An apartment rental platform built with Angular and Tailwind CSS.
 
-## Development server
+## Links
 
-To start a local development server, run:
+- **GitHub:** https://github.com/<your-username>/rent-hub
+- **Live app:** https://<your-site>.netlify.app
 
-```bash
-ng serve
-```
+## Demo credentials
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+| Email | Password |
+|---|---|
+| demo@renthub.com | Demo@123 |
 
-## Code scaffolding
+You can also register your own account on the Register page.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Features
 
-```bash
-ng generate component component-name
-```
+- Registration, login and logout, with auth guards on protected routes
+- Home page: featured carousel, paginated listings, sorting, and search and filters (location, price range, amenities)
+- Mark as favourite and send inquiries to landlords
+- Create, edit and delete listings, with form validation
+- Listing details page with photo gallery
+- Comments with replies
+- Profile page: my listings, favourites and inquiries received
+- Responsive layout
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Bonus attempted
 
-```bash
-ng generate --help
-```
+- **Preview and Submit screen** for posts. The form goes to a preview, where you can edit or submit.
 
-## Building
+## Tech
 
-To build the project run:
+Angular (standalone components, signals, reactive forms, lazy-loaded routes), Tailwind CSS, Vitest.
 
-```bash
-ng build
-```
+## Notes
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- There is no backend. Data is stored in the browser's `localStorage` and seeded with sample listings on first load.
+- Passwords are stored in plain text because this is a frontend-only demo. A real app would hash them on a server.
+- The create form includes a "Number of Beds" field so the preview matches the wireframe.
+- The vegetarian preference radio mentioned in the brief is not included.
 
-## Running unit tests
+## Run locally
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+    npm install
+    ng serve
 
-```bash
-ng test
-```
+Open http://localhost:4200.
 
-## Running end-to-end tests
+## Run tests
 
-For end-to-end (e2e) testing, run:
+    ng test --no-watch
 
-```bash
-ng e2e
-```
+Unit tests cover `AuthService` and `ListingService` (services), `PaginationComponent` and `AuthComponent` (components), and `SharedModule` (module).
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Build
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+    ng build

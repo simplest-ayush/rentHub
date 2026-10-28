@@ -1,0 +1,93 @@
+<div class="mx-auto max-w-md">
+  @if (mode() === 'login') {
+    <!-- LOGIN -->
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">Login</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" novalidate class="space-y-4">
+        <div>
+          <label for="login-email" class="mb-1 block text-sm">Email</label>
+          <input id="login-email" type="email" formControlName="email" class="input" />
+          @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) {
+            <p class="error">
+              @if (loginForm.controls.email.hasError('required')) { Email is required }
+              @else { Enter a valid email address }
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="login-password" class="mb-1 block text-sm">Password</label>
+          <input id="login-password" type="password" formControlName="password" class="input" />
+          @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+            <p class="error">Password is required</p>
+          }
+        </div>
+
+        @if (loginError()) {
+          <p class="error" role="alert">{{ loginError() }}</p>
+        }
+
+        <button type="submit" class="btn">Login</button>
+      </form>
+
+      <p class="mt-4 text-sm">
+        New here?
+        <a routerLink="/auth" [queryParams]="{ mode: 'register' }" queryParamsHandling="merge"
+           class="text-teal-600 hover:underline">Create an account</a>
+      </p>
+    </section>
+  } @else {
+    <!-- REGISTER -->
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">Register</h2>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate class="space-y-4">
+        <div>
+          <label for="reg-name" class="mb-1 block text-sm">Name</label>
+          <input id="reg-name" type="text" formControlName="name" class="input" />
+          @if (registerForm.controls.name.touched && registerForm.controls.name.invalid) {
+            <p class="error">
+              @if (registerForm.controls.name.hasError('required')) { Name is required }
+              @else { Name must be at least 2 characters }
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="reg-email" class="mb-1 block text-sm">Email</label>
+          <input id="reg-email" type="email" formControlName="email" class="input" />
+          @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) {
+            <p class="error">
+              @if (registerForm.controls.email.hasError('required')) { Email is required }
+              @else { Enter a valid email address }
+            </p>
+          }
+        </div>
+
+        <div>
+          <label for="reg-password" class="mb-1 block text-sm">Password</label>
+          <input id="reg-password" type="password" formControlName="password" class="input" />
+          @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) {
+            <p class="error">
+              @if (registerForm.controls.password.hasError('required')) { Password is required }
+              @else { Password must be at least 6 characters }
+            </p>
+          }
+        </div>
+
+        @if (registerError()) {
+          <p class="error" role="alert">{{ registerError() }}</p>
+        }
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+
+      <p class="mt-4 text-sm">
+        Already have an account?
+        <a routerLink="/auth" [queryParams]="{ mode: 'login' }" queryParamsHandling="merge"
+           class="text-teal-600 hover:underline">Login</a>
+      </p>
+    </section>
+  }
+</div>

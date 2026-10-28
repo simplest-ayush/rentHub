@@ -1,0 +1,80 @@
+@if (draft(); as d) {
+<div class="mx-auto max-w-3xl space-y-4">
+    <h1 class="text-center text-2xl font-bold">Preview and Submit</h1>
+
+    <div class="rounded-xl border bg-white p-4 shadow-sm">
+        <p class="text-xs font-semibold uppercase text-gray-500">Title</p>
+        <p class="text-lg font-bold">{{ d.data.title }}</p>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Property Type</p>
+            <p>{{ d.data.propertyType }}: {{ d.data.propertyName }}</p>
+            <p class="text-sm text-gray-500">{{ d.data.shared ? 'Shared property' : 'Not shared' }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Number of Beds</p>
+            <p>{{ d.data.beds }}</p>
+            <p class="text-sm text-gray-500">{{ d.data.sqft }} sq ft</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Address</p>
+            <p>{{ d.data.street }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Rent</p>
+            <p>
+                {{ d.data.rent | currency: 'INR' : 'symbol' : '1.0-0' }}
+                {{ d.data.priceMode === 'perMonth' ? '/month' : '(utilities included)' }}
+            </p>
+            <p class="text-sm text-gray-500">
+                {{ d.data.negotiable ? 'Negotiable' : 'Not negotiable' }} · {{ leaseLabels[d.data.leaseType] }}
+            </p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Description</p>
+            <p class="whitespace-pre-line text-sm text-gray-700">{{ d.data.description }}</p>
+        </div>
+
+        <div class="rounded-xl border bg-white p-4 shadow-sm">
+            <p class="font-bold">Amenities</p>
+            @if (d.data.amenities.length) {
+            <ul class="list-inside list-disc text-sm">
+                @for (a of d.data.amenities; track a) { <li>{{ a }}</li> }
+            </ul>
+            } @else {
+            <p class="text-sm text-gray-500">None selected</p>
+            }
+            <p class="mt-2 text-sm text-gray-500">
+                {{ d.data.furnished ? 'Furnished' : 'Unfurnished' }}
+            </p>
+        </div>
+    </div>
+
+    <div class="rounded-xl border bg-white p-4 shadow-sm">
+        <p class="font-bold">Contact</p>
+        <p class="text-sm">{{ d.data.contactName }} · {{ d.data.contactPhone }} · {{ d.data.contactEmail }}</p>
+    </div>
+
+    <div class="rounded-xl border bg-white p-4 shadow-sm">
+        <p class="mb-2 font-bold">Photos</p>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            @for (p of d.data.photos; track $index) {
+            <img [src]="p" alt="Photo {{ $index + 1 }}" class="h-32 w-full rounded object-cover" />
+            }
+        </div>
+    </div>
+
+    <div class="flex gap-3">
+        <button type="button" class="btn-outline" (click)="edit()">Edit</button>
+        <button type="button" class="btn" (click)="submit()">
+            {{ d.editId ? 'Save Changes' : 'Submit' }}
+        </button>
+    </div>
+</div>
+}

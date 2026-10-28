@@ -1,0 +1,125 @@
+@if (listing(); as l) {
+  <div class="mx-auto max-w-4xl space-y-6">
+    <a routerLink="/" class="text-sm text-teal-700 hover:underline">← Back to listings</a>
+
+    <!-- PHOTOS -->
+    <section aria-label="Photos">
+      <img [src]="l.photos[selectedPhoto()]" [alt]="l.title"
+        class="h-64 w-full rounded-xl object-cover md:h-96" />
+      @if (l.photos.length > 1) {
+        <div class="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+          @for (p of l.photos; track $index) {
+            <button type="button" (click)="selectedPhoto.set($index)"
+              [attr.aria-label]="'Show photo ' + ($index + 1)"
+              class="overflow-hidden rounded border-2"
+              [class.border-teal-600]="$index === selectedPhoto()"
+              [class.border-transparent]="$index !== selectedPhoto()">
+              <img [src]="p" alt="" class="h-20 w-full object-cover" />
+            </button>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- HEADER -->
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-bold">{{ l.title }}</h1>
+          <p class="text-gray-500">{{ l.street }}</p>
+        </div>
+        <p class="text-2xl font-semibold text-teal-700">
+          {{ l.rent | currency: 'INR' : 'symbol' : '1.0-0' }}
+          <span class="text-sm font-normal text-gray-500">
+            {{ l.priceMode === 'perMonth' ? '/month' : '(utilities included)' }}
+          </span>
+        </p>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        @if (isOwner()) {
+          <a [routerLink]="['/listings', l.id, 'edit']" class="btn">Edit Listing</a>
+        } @else {
+          <button type="button" class="btn-outline" [attr.aria-pressed]="interest.isFavourite(l.id)"
+            (click)="toggleFavourite()">
+            {{ interest.isFavourite(l.id) ? 'Remove Favourite' : 'Mark as Favourite' }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- DETAILS -->
+    <section class="grid gap-4 md:grid-cols-2">
+      <div class="rounded-xl border bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-lg font-bold">Property Details</h2>
+        <dl class="space-y-1 text-sm">
+          <div class="flex justify-between"><dt class="text-gray-500">Type</dt><dd>{{ l.propertyType }}: {{ l.propertyName }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Shared property</dt><dd>{{ l.shared ? 'Yes' : 'No' }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Area</dt><dd>{{ l.sqft }} sq ft</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Beds</dt><dd>{{ l.beds }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Lease type</dt><dd>{{ leaseLabels[l.leaseType] }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Negotiable</dt><dd>{{ l.negotiable ? 'Yes' : 'No' }}</dd></div>
+          <div class="flex justify-between"><dt class="text-gray-500">Furnished</dt><dd>{{ l.furnished ? 'Yes' : 'No' }}</dd></div>
+        </dl>
+      </div>
+
+      <div class="rounded-xl border bg-white p-6 shadow-sm">
+        <h2 class="mb-2 text-lg font-bold">Amenities</h2>
+        @if (l.amenities.length) {
+          <ul class="grid grid-cols-2 gap-1 text-sm">
+            @for (a of l.amenities; track a) { <li>✓ {{ a }}</li> }
+          </ul>
+        } @else {
+          <p class="text-sm text-gray-500">No amenities listed</p>
+        }
+      </div>
+    </section>
+
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <h2 class="mb-2 text-lg font-bold">Description</h2>
+      <p class="whitespace-pre-line text-sm text-gray-700">{{ l.description }}</p>
+    </section>
+
+    <!-- CONTACT + INQUIRY -->
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <h2 class="mb-2 text-lg font-bold">Contact</h2>
+      <p class="text-sm">{{ l.contactName }} · {{ l.contactPhone }} · {{ l.contactEmail }}</p>
+
+      @if (!isOwner()) {
+        <div class="mt-4 border-t pt-4">
+          <h3 class="mb-2 font-semibold">Send an inquiry to the landlord</h3>
+
+          @if (!auth.isLoggedIn()) {
+            <p class="text-sm">
+              <a routerLink="/auth" [queryParams]="{ mode: 'login', returnUrl: '/listings/' + l.id }"
+                class="text-teal-700 hover:underline">Login</a> to send an inquiry.
+            </p>
+          } @else if (inquirySent()) {
+            <p class="rounded bg-green-50 p-3 text-sm text-green-700" role="status">
+              Your inquiry has been sent to the landlord.
+            </p>
+          } @else {
+            <label for="inquiry" class="mb-1 block text-sm">Your message</label>
+            <textarea id="inquiry" rows="3" class="input" [formControl]="inquiry"
+              placeholder="Hi, I'm interested in this apartment..."></textarea>
+            @if (inquiry.touched && inquiry.invalid) {
+              <p class="error">
+                @if (inquiry.hasError('required') || inquiry.hasError('blank')) { Message is required }
+                @else if (inquiry.hasError('minlength')) { Message must be at least 10 characters }
+                @else { Message cannot exceed 500 characters }
+              </p>
+            }
+            <button type="button" class="btn mt-2" (click)="sendInquiry()">Send Inquiry</button>
+          }
+        </div>
+      }
+    </section>
+
+    <app-comments [listingId]="l.id" [ownerId]="l.ownerId" />
+  </div>
+} @else {
+  <div class="rounded-xl border bg-white p-8 text-center">
+    <p class="mb-3 text-gray-600">This listing doesn't exist or was removed.</p>
+    <a routerLink="/" class="btn">Back to home</a>
+  </div>
+}

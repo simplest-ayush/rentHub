@@ -1,0 +1,16 @@
+<header class="border-b bg-white shadow-sm">
+  <nav class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 p-4">
+    <a routerLink="/" class="text-xl font-bold text-teal-600">RentHub</a>
+
+    <div class="flex items-center gap-4 text-sm">
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/listings/new" class="hover:text-teal-600">Post Apartment</a>
+        <a routerLink="/profile" class="hover:text-teal-600">Profile</a>
+        <button type="button" (click)="logout()" class="hover:text-teal-600">Logout</button>
+            } @else {
+        <a routerLink="/auth" [queryParams]="{ mode: 'login' }" class="hover:text-teal-600">Login</a>
+        <a routerLink="/auth" [queryParams]="{ mode: 'register' }" class="hover:text-teal-600">Register</a>
+      }
+    </div>
+  </nav>
+</header>

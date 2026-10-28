@@ -1,0 +1,96 @@
+@if (auth.user(); as u) {
+  <div class="mx-auto max-w-4xl space-y-8">
+    <!-- USER INFO -->
+    <section class="rounded-xl border bg-white p-6 shadow-sm">
+      <h1 class="mb-2 text-2xl font-bold">My Profile</h1>
+      <dl class="space-y-1 text-sm">
+        <div class="flex gap-2"><dt class="w-16 text-gray-500">Name</dt><dd>{{ u.name }}</dd></div>
+        <div class="flex gap-2"><dt class="w-16 text-gray-500">Email</dt><dd>{{ u.email }}</dd></div>
+      </dl>
+    </section>
+
+    <!-- MY LISTINGS -->
+    <section>
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-xl font-bold">My Listings ({{ myListings().length }})</h2>
+        <a routerLink="/listings/new" class="btn">Post Apartment</a>
+      </div>
+
+      @for (l of myListings(); track l.id) {
+        <article class="mb-3 flex flex-col gap-3 rounded-xl border bg-white p-4 shadow-sm sm:flex-row">
+          <img [src]="l.photos[0]" [alt]="l.title" class="h-28 w-full rounded object-cover sm:w-40" />
+          <div class="flex-1">
+            <h3 class="font-bold">{{ l.title }}</h3>
+            <p class="text-sm text-gray-500">{{ l.street }}</p>
+            <p class="text-sm font-semibold text-teal-700">
+              {{ l.rent | currency: 'INR' : 'symbol' : '1.0-0' }}
+              {{ l.priceMode === 'perMonth' ? '/month' : '(utilities included)' }}
+            </p>
+
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              @if (confirmingId() === l.id) {
+                <span class="text-sm">Delete this listing?</span>
+                <button type="button" class="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+                  (click)="confirmDelete(l.id)">Yes, delete</button>
+                <button type="button" class="btn-outline" (click)="cancelDelete()">Cancel</button>
+              } @else {
+                <a [routerLink]="['/listings', l.id]" class="btn-outline">View</a>
+                <a [routerLink]="['/listings', l.id, 'edit']" class="btn-outline">Edit</a>
+                <button type="button" class="btn-outline" (click)="askDelete(l.id)">Delete</button>
+              }
+            </div>
+          </div>
+        </article>
+      } @empty {
+        <p class="rounded-xl border bg-white p-6 text-center text-sm text-gray-500">
+          You haven't posted any listings yet.
+        </p>
+      }
+    </section>
+
+    <!-- INQUIRIES RECEIVED -->
+    <section>
+      <h2 class="mb-3 text-xl font-bold">Inquiries Received ({{ receivedInquiries().length }})</h2>
+      @for (i of receivedInquiries(); track i.id) {
+        <article class="mb-3 rounded-xl border bg-white p-4 shadow-sm">
+          <p class="text-sm">
+            <span class="font-semibold">{{ i.fromName }}</span> on
+            <a [routerLink]="['/listings', i.listingId]" class="text-teal-700 hover:underline">{{ i.listingTitle }}</a>
+            <span class="ml-2 text-xs text-gray-500">{{ i.createdAt | date: 'medium' }}</span>
+          </p>
+          <p class="mt-1 whitespace-pre-line text-sm text-gray-700">{{ i.message }}</p>
+        </article>
+      } @empty {
+        <p class="rounded-xl border bg-white p-6 text-center text-sm text-gray-500">No inquiries yet.</p>
+      }
+    </section>
+
+    <!-- FAVOURITES -->
+    <section>
+      <h2 class="mb-3 text-xl font-bold">My Favourites ({{ favourites().length }})</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (l of favourites(); track l.id) {
+          <article class="overflow-hidden rounded-xl border bg-white shadow-sm">
+            <img [src]="l.photos[0]" [alt]="l.title" loading="lazy" class="h-36 w-full object-cover" />
+            <div class="p-4">
+              <h3 class="font-bold">{{ l.title }}</h3>
+              <p class="text-sm text-gray-500">{{ l.street }}</p>
+              <p class="mt-1 text-sm font-semibold text-teal-700">
+                {{ l.rent | currency: 'USD' : 'symbol' : '1.0-0' }}
+              </p>
+              <div class="mt-3 flex gap-2">
+                <a [routerLink]="['/listings', l.id]" class="btn">View Details</a>
+                <button type="button" class="btn-outline" (click)="removeFavourite(l.id)">Remove</button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+      @if (!favourites().length) {
+        <p class="rounded-xl border bg-white p-6 text-center text-sm text-gray-500">
+          No favourites yet. Mark listings from the Home page.
+        </p>
+      }
+    </section>
+  </div>
+}

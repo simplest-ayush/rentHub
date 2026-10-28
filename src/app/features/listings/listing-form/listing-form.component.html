@@ -1,0 +1,251 @@
+<form [formGroup]="form" (ngSubmit)="onPreview()" novalidate class="mx-auto max-w-3xl space-y-6">
+  <h1 class="text-2xl font-bold">{{ editId ? 'Edit Listing' : 'Post an Apartment' }}</h1>
+
+  <!-- PROPERTY -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Choose your Apartment/Building</h2>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label for="propertyType" class="mb-1 block text-sm">Property type</label>
+        <select id="propertyType" formControlName="propertyType" class="input">
+          <option value="" disabled>Select an option</option>
+          @for (t of propertyTypes; track t) { <option [value]="t">{{ t }}</option> }
+        </select>
+        @if (show(f.propertyType)) { <p class="error">Please select a property type</p> }
+      </div>
+
+      <div>
+        <label for="propertyName" class="mb-1 block text-sm">Enter the name of your apartment/building</label>
+        <input id="propertyName" type="text" formControlName="propertyName" class="input" />
+        @if (show(f.propertyName)) {
+          <p class="error">
+            @if (f.propertyName.hasError('required')) { Name is required }
+            @else { Name must be at least 2 characters }
+          </p>
+        }
+      </div>
+    </div>
+
+    <fieldset>
+      <legend class="mb-1 text-sm font-medium">Is this a shared property?</legend>
+      <label class="mr-4"><input type="radio" formControlName="shared" [value]="true" /> Yes</label>
+      <label><input type="radio" formControlName="shared" [value]="false" /> No</label>
+      @if (show(f.shared)) { <p class="error">Please choose an option</p> }
+    </fieldset>
+  </section>
+
+  <!-- LOCATION -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Property Location</h2>
+    <div>
+      <label for="street" class="mb-1 block text-sm">Street Address</label>
+      <input id="street" type="text" formControlName="street" class="input" placeholder="Enter street address" />
+      @if (show(f.street)) {
+        <p class="error">
+          @if (f.street.hasError('required')) { Street address is required }
+          @else { Enter at least 5 characters }
+        </p>
+      }
+    </div>
+  </section>
+
+  <!-- DETAILS -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Property Details</h2>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label for="sqft" class="mb-1 block text-sm">Square Feet</label>
+        <input id="sqft" type="number" formControlName="sqft" class="input" placeholder="Enter area in square feet" />
+        @if (show(f.sqft)) {
+          <p class="error">
+            @if (f.sqft.hasError('required')) { Area is required }
+            @else { Area must be between 50 and 100000 sq ft }
+          </p>
+        }
+      </div>
+
+      <div>
+        <label for="beds" class="mb-1 block text-sm">Number of Beds</label>
+        <input id="beds" type="number" formControlName="beds" class="input" />
+        @if (show(f.beds)) {
+          <p class="error">
+            @if (f.beds.hasError('required')) { Number of beds is required }
+            @else { Beds must be between 1 and 20 }
+          </p>
+        }
+      </div>
+    </div>
+
+    <fieldset>
+      <legend class="mb-1 text-sm font-medium">Stay / Lease type</legend>
+      <div class="flex flex-wrap gap-4">
+        <label><input type="radio" formControlName="leaseType" value="long" /> Long term (6+ months)</label>
+        <label><input type="radio" formControlName="leaseType" value="short" /> Short term</label>
+        <label><input type="radio" formControlName="leaseType" value="both" /> Both</label>
+      </div>
+      @if (show(f.leaseType)) { <p class="error">Please choose a lease type</p> }
+    </fieldset>
+  </section>
+
+  <!-- RENT -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Expected Rent</h2>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label for="rent" class="mb-1 block text-sm">Expected Rent (₹)</label>
+        <input id="rent" type="number" formControlName="rent" class="input" placeholder="Enter expected rent" />
+        @if (show(f.rent)) {
+          <p class="error">
+            @if (f.rent.hasError('required')) { Rent is required }
+            @else { Rent must be greater than 0 }
+          </p>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" formControlName="negotiable" /> Negotiable
+        </label>
+        <fieldset>
+          <legend class="mb-1 text-sm font-medium">Price Mode</legend>
+          <div class="flex flex-wrap gap-4 text-sm">
+            <label><input type="radio" formControlName="priceMode" value="perMonth" /> Per Month</label>
+            <label><input type="radio" formControlName="priceMode" value="utilitiesIncluded" /> Utilities included in rent</label>
+          </div>
+          @if (show(f.priceMode)) { <p class="error">Please choose a price mode</p> }
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- FURNISHED -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <fieldset>
+      <legend class="mb-1 text-lg font-bold">Is the room/apartment furnished?</legend>
+      <label class="mr-4"><input type="radio" formControlName="furnished" [value]="true" /> Yes</label>
+      <label><input type="radio" formControlName="furnished" [value]="false" /> No</label>
+      @if (show(f.furnished)) { <p class="error">Please choose an option</p> }
+    </fieldset>
+  </section>
+
+  <!-- AMENITIES -->
+  <section class="rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="mb-3 text-lg font-bold">Amenities included</h2>
+    <div formGroupName="amenities" class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      @for (a of amenities; track a) {
+        <label class="flex items-center gap-2 text-sm">
+          <input type="checkbox" [formControlName]="a" /> {{ a }}
+        </label>
+      }
+    </div>
+  </section>
+
+  <!-- DESCRIPTION -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Description</h2>
+
+    <div>
+      <label for="title" class="mb-1 block text-sm">Title</label>
+      <input id="title" type="text" formControlName="title" class="input" placeholder="Enter your AD title" />
+      @if (show(f.title)) {
+        <p class="error">
+          @if (f.title.hasError('required')) { Title is required }
+          @else if (f.title.hasError('minlength')) { Title must be at least 5 characters }
+          @else { Title cannot exceed 100 characters }
+        </p>
+      }
+    </div>
+
+    <div>
+      <label for="description" class="mb-1 block text-sm">Description</label>
+      <textarea id="description" rows="5" formControlName="description" class="input"
+        [attr.maxlength]="maxDescription"
+        placeholder="Enter a detailed description within 1400 characters"></textarea>
+      <div class="flex justify-between">
+        <div>
+          @if (show(f.description)) {
+            <p class="error">
+              @if (f.description.hasError('required')) { Description is required }
+              @else if (f.description.hasError('minlength')) { Description must be at least 20 characters }
+              @else { Description cannot exceed 1400 characters }
+            </p>
+          }
+        </div>
+        <p class="mt-1 text-xs text-gray-500">{{ descriptionLength() }} / {{ maxDescription }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="space-y-4 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Contact Information</h2>
+
+    <div class="grid gap-4 md:grid-cols-3">
+      <div>
+        <label for="contactName" class="mb-1 block text-sm">Name</label>
+        <input id="contactName" type="text" formControlName="contactName" class="input" />
+        @if (show(f.contactName)) {
+          <p class="error">
+            @if (f.contactName.hasError('required')) { Name is required }
+            @else { Name must be at least 2 characters }
+          </p>
+        }
+      </div>
+
+      <div>
+        <label for="contactPhone" class="mb-1 block text-sm">Phone</label>
+        <input id="contactPhone" type="tel" formControlName="contactPhone" class="input" />
+        @if (show(f.contactPhone)) {
+          <p class="error">
+            @if (f.contactPhone.hasError('required')) { Phone is required }
+            @else { Enter a valid phone number (7-15 digits) }
+          </p>
+        }
+      </div>
+
+      <div>
+        <label for="contactEmail" class="mb-1 block text-sm">Email</label>
+        <input id="contactEmail" type="email" formControlName="contactEmail" class="input" />
+        @if (show(f.contactEmail)) {
+          <p class="error">
+            @if (f.contactEmail.hasError('required')) { Email is required }
+            @else { Enter a valid email address }
+          </p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTOS -->
+  <section class="space-y-3 rounded-xl border bg-white p-6 shadow-sm">
+    <h2 class="text-lg font-bold">Photos</h2>
+    <p class="text-sm text-gray-500">Add 1 to {{ maxPhotos }} photos.</p>
+
+    <input type="file" accept="image/*" multiple (change)="onFiles($event)"
+      [disabled]="f.photos.value.length >= maxPhotos" aria-label="Upload photos" />
+
+    @if (photoError()) { <p class="error">{{ photoError() }}</p> }
+    @if (show(f.photos) && !f.photos.value.length) { <p class="error">At least one photo is required</p> }
+
+    @if (f.photos.value.length) {
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        @for (p of f.photos.value; track $index) {
+          <div class="relative">
+            <img [src]="p" alt="Selected photo {{ $index + 1 }}" class="h-24 w-full rounded object-cover" />
+            <button type="button" (click)="removePhoto($index)" aria-label="Remove photo"
+              class="absolute right-1 top-1 rounded-full bg-black/60 px-2 text-white hover:bg-black/80">×</button>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  @if (submitted() && form.invalid) {
+    <p class="error" role="alert">Please fix the highlighted fields before continuing.</p>
+  }
+
+  <button type="submit" class="btn">Preview</button>
+</form>

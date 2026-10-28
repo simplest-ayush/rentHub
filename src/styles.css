@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@layer components {
+  .input { @apply w-full rounded border border-gray-300 px-3 py-2 focus:border-teal-600 focus:outline-none; }
+  .btn { @apply rounded bg-teal-600 px-4 py-2 text-white hover:bg-teal-700 disabled:opacity-50; }
+  .btn-outline { @apply rounded border border-teal-600 px-4 py-2 text-teal-700 hover:bg-teal-50; }
+  .error { @apply mt-1 text-sm text-red-600; }
+}
