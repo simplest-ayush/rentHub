@@ -9,7 +9,7 @@ import { SharedModule } from '../../../shared/shared-module';
 
 const MAX_PHOTOS = 5;
 const MAX_DESCRIPTION = 1400;
-const PHONE_PATTERN = /^[0-9+\-\s]{7,15}$/;
+const PHONE_PATTERN = /^[0-9]{10}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const atLeastOnePhoto: ValidatorFn = control =>
@@ -179,5 +179,11 @@ export class ListingFormComponent {
       };
       reader.readAsDataURL(file);
     });
+  }
+
+    onlyDigits(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '');
+    this.f.contactPhone.setValue(input.value);
   }
 }

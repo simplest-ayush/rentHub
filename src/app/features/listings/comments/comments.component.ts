@@ -91,6 +91,7 @@ const MAX_LENGTH = 500;
   `,
 })
 export class CommentsComponent {
+  // input.required<string>() creates an input signal
   listingId = input.required<string>();
   ownerId = input.required<string>();
 
